@@ -10,31 +10,48 @@ $(document).ready(function(){
         $('.overlay').fadeOut(1000);
     });
 
+    // Global variables
+    var currentGuess;
+    var previousGuess;
+    var count;
+    var generatedNumber;
+    var feedback;
+    var newDifference;
+    var oldDifference;
 
     // Start the game when the document loads.
     newGame();
 
+    // Function to reset the components of the game.
+    function resetComponents () {
+        // Variable that holds the current guess.
+        currentGuess = "";
+        previousGuess = "";
+
+        // Reset the counter, empty the guess list, and reset the header.
+        var count = 0;
+        $('span#count').text(count);
+        $('h2#feedback').text('Make your Guess!');
+        $('ul#guessList').empty();
+    }
+
     // Function that sets the environment for a new game.
     function newGame() {
 
-        // Variable that holds the current guess.
-        var currentGuess = "";
-        var previousGuess = "";
-
-        // Reset the counter, empty the guess list, and reset the header.
-        var guessCount = 0;
-        $('span#count').text(guessCount);
-        $('h2#feedback').text('Make your Guess!');
-        $('ul#guessList').empty();
+        resetComponents();
 
         // Get the number from the computer to start the game.
-        var generatedNumber = getRandomInt(1, 100);
+        generatedNumber = getRandomInt(1, 100);
+
+        // Debugging statement.
         console.log("The actual number is: " + generatedNumber);
-        playGame(currentGuess, previousGuess, guessCount, generatedNumber);
+
+        // Run a function to start the game.
+        playGame(currentGuess, previousGuess, count, generatedNumber);
         return;
     }
 
-    function playGame(thisGuess, priorGuess, count, secretNumber) {
+    function playGame() {
 
         // Function to activate the New Game link.
         $('a.new').on('click', newGame);
@@ -42,25 +59,38 @@ $(document).ready(function(){
         // Get the user's guess.
         $('form').submit(function(e) {
             e.preventDefault();
-            thisGuess = $('input#userGuess').val();
-            console.log("The user guessed: " + thisGuess);
+
+            // Get the guess and validate it.
+            currentGuess = $('input#userGuess').val();
+
+            // Debugging code
+            console.log("The user guessed: " + currentGuess);
+
+            // Reset the input box.
             $('input#userGuess').val('');
+
+            // Increment the counter for the number of guesses
             count += 1;
             $('span#count').text(count);
 
             // Get the user's guess and add it to the list of guesses.
-            $('ul#guessList').append('<li>' + thisGuess + '</li>');
+            $('ul#guessList').append('<li>' + currentGuess + '</li>');
 
             // Compare the current guess with the real number.
-            var userFeedback = compareValues(thisGuess, priorGuess, secretNumber);
+            feedback = compareValues();
 
             // Render the feedback to the page.
-            $('h2#feedback').text(userFeedback);
+            $('h2#feedback').text(feedback);
 
             // Copy the current guess to a variable to track it for later.
-            priorGuess = thisGuess;
+            previousGuess = currentGuess;
         });
         return;
+
+    }
+
+    // Function to validate the user input.
+    function validateInput() {
 
     }
 
@@ -71,14 +101,14 @@ $(document).ready(function(){
 
     // Function that compares the guess with the actual number and
     // gives the appropriate feedback depending on the accuracy of the guess.
-    function compareValues(newGuess, oldGuess, actualNumber) {
+    function compareValues() {
 
-        var newDifference = Math.abs(newGuess - actualNumber);
-        var feedback = "";
+        newDifference = Math.abs(currentGuess - generatedNumber);
+        feedback = "";
         if (newDifference === 0) {
             feedback = "You've guessed it!";
-        } else if (oldGuess) {
-            var oldDifference = Math.abs(oldGuess - actualNumber);
+        } else if (previousGuess) {
+            oldDifference = Math.abs(previousGuess - actualNumber);
             if (newDifference < oldDifference) {
                 feedback = "Warmer";
             } else {
