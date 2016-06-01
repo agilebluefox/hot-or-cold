@@ -11,6 +11,7 @@ $(document).ready(function(){
     });
 
     // Global variables
+    var guessArray;
     var currentGuess;
     var previousGuess;
     var count;
@@ -20,7 +21,6 @@ $(document).ready(function(){
     var oldDifference;
 
     // Function to activate the New Game link.
-
     $('a.new').on('click', newGame);
 
     // Get the user's guess.
@@ -31,10 +31,10 @@ $(document).ready(function(){
 
     // Function to reset the components of the game.
     function resetComponents () {
-        // Variable that holds the current guess.
         currentGuess = "";
         previousGuess = "";
         feedback = "";
+        guessArray = [];
 
         // Reset the counter, empty the guess list, and reset the header.
         count = 0;
@@ -53,8 +53,8 @@ $(document).ready(function(){
         // Get the number from the computer to start the game.
         generatedNumber = getRandomInt(1, 100);
 
-        // Debugging statement.
-        console.log("The actual number is: " + generatedNumber);
+        // Debugging code.
+        //console.log("The actual number is: " + generatedNumber);
 
         return;
     }
@@ -66,17 +66,18 @@ $(document).ready(function(){
             currentGuess = $('input#userGuess').val();
 
             // Debugging code
-            console.log("The user guessed: " + currentGuess);
+            //console.log("The user guessed: " + currentGuess);
 
             // Reset the input box.
             $('input#userGuess').val('');
 
             // Debugging code.
-            console.log("Current guess is: " + currentGuess);
+            //console.log("Current guess is: " + currentGuess);
 
             // Check to see if the guess meets the criteria.
             // If so, add it to the count and the list of guesses.
             if (validateInput()) {
+
                 // Increment the counter for the number of guesses
                 count += 1;
                 $('span#count').text(count);
@@ -92,7 +93,7 @@ $(document).ready(function(){
             }
 
             renderFeedback();
-
+            return;
         }
 
     // Function to render feedback
@@ -108,17 +109,28 @@ $(document).ready(function(){
         currentGuess = parseInt(currentGuess, 10);
 
         // Debugging code.
-        console.log("Validate this: " + currentGuess);
+        //console.log("Guess Array: " + guessArray);
 
+        // Check that it meets the requirements.
         if (currentGuess >= 1 && currentGuess <= 100) {
+
+            // Already guessed this number?
+            if ( guessArray.indexOf(+currentGuess) < 0 ) {
+                // Add the guess to the array.
+                guessArray.push(+currentGuess);
+            } else {
+                //console.log("The number is in: " + guessArray.indexOf(+currentGuess));
+                feedback = "You've already guessed that number.";
+                return false;
+            }
+            // If it's a valid, unique guess return true.
             return true;
         } else if (currentGuess > 100 || currentGuess < 1) {
             feedback = "Must be between 1 and 100.";
-            return false;
         } else {
             feedback = "Not a number. Try again.";
-            return false;
         }
+        return false;
     }
 
     // Function that returns a random Integer.
