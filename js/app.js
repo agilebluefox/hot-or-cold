@@ -27,12 +27,15 @@ $(document).ready(function(){
         // Variable that holds the current guess.
         currentGuess = "";
         previousGuess = "";
+        feedback = "";
 
         // Reset the counter, empty the guess list, and reset the header.
-        var count = 0;
+        count = 0;
         $('span#count').text(count);
         $('h2#feedback').text('Make your Guess!');
         $('ul#guessList').empty();
+
+        return;
     }
 
     // Function that sets the environment for a new game.
@@ -47,7 +50,7 @@ $(document).ready(function(){
         console.log("The actual number is: " + generatedNumber);
 
         // Run a function to start the game.
-        playGame(currentGuess, previousGuess, count, generatedNumber);
+        playGame();
         return;
     }
 
@@ -69,29 +72,58 @@ $(document).ready(function(){
             // Reset the input box.
             $('input#userGuess').val('');
 
-            // Increment the counter for the number of guesses
-            count += 1;
-            $('span#count').text(count);
 
-            // Get the user's guess and add it to the list of guesses.
-            $('ul#guessList').append('<li>' + currentGuess + '</li>');
 
-            // Compare the current guess with the real number.
-            feedback = compareValues();
+            // Debugging code.
+            console.log("Current guess is: " + currentGuess);
+            if (validateInput()) {
+                // Increment the counter for the number of guesses
+                count += 1;
+                $('span#count').text(count);
 
-            // Render the feedback to the page.
-            $('h2#feedback').text(feedback);
+                // Get the user's guess and add it to the list of guesses.
+                $('ul#guessList').append('<li>' + currentGuess + '</li>');
 
-            // Copy the current guess to a variable to track it for later.
-            previousGuess = currentGuess;
+                // Compare the current guess with the real number.
+                feedback = compareValues();
+
+               renderFeedback();
+
+                // Copy the current guess to a variable to track it for later.
+                previousGuess = currentGuess;
+            }
+
+            renderFeedback();
+
         });
         return;
 
     }
 
+    // Function to render feedback
+    function renderFeedback () {
+        // Render the feedback to the page.
+        $('h2#feedback').text(feedback);
+        return;
+    }
+
     // Function to validate the user input.
     function validateInput() {
+        // If number, make sure it's an integer
+        currentGuess = parseInt(currentGuess, 10);
 
+        // Debugging code.
+        console.log("Validate this: " + currentGuess);
+
+        if (currentGuess >= 1 && currentGuess <= 100) {
+            return true;
+        } else if (currentGuess > 100 || currentGuess < 1) {
+            feedback = "Must be between 1 and 100.";
+            return false;
+        } else {
+            feedback = "Not a number. Try again.";
+            return false;
+        }
     }
 
     // Function that returns a random Integer.
@@ -108,7 +140,7 @@ $(document).ready(function(){
         if (newDifference === 0) {
             feedback = "You've guessed it!";
         } else if (previousGuess) {
-            oldDifference = Math.abs(previousGuess - actualNumber);
+            oldDifference = Math.abs(previousGuess - generatedNumber);
             if (newDifference < oldDifference) {
                 feedback = "Warmer";
             } else {
