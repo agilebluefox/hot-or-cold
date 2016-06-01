@@ -19,6 +19,13 @@ $(document).ready(function(){
     var newDifference;
     var oldDifference;
 
+    // Function to activate the New Game link.
+    // TODO: Fix this
+    $('a.new').on('click', newGame);
+
+    // Get the user's guess.
+    $('form').submit(submitGuess);
+
     // Start the game when the document loads.
     // TODO: Fix this - causes conflict with new game link.
     // Ask Vincent about this!
@@ -51,19 +58,10 @@ $(document).ready(function(){
         // Debugging statement.
         console.log("The actual number is: " + generatedNumber);
 
-        // Run a function to start the game.
-        playGame();
         return;
     }
 
-    function playGame() {
-
-        // Function to activate the New Game link.
-        // TODO: Fix this
-        $('a.new').on('click', newGame);
-
-        // Get the user's guess.
-        $('form').submit(function(e) {
+    function submitGuess(e) {
             e.preventDefault();
 
             // Get the guess.
@@ -97,10 +95,7 @@ $(document).ready(function(){
 
             renderFeedback();
 
-        });
-        return;
-
-    }
+        }
 
     // Function to render feedback
     function renderFeedback () {
