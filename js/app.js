@@ -20,15 +20,13 @@ $(document).ready(function(){
     var oldDifference;
 
     // Function to activate the New Game link.
-    // TODO: Fix this
+
     $('a.new').on('click', newGame);
 
     // Get the user's guess.
     $('form').submit(submitGuess);
 
     // Start the game when the document loads.
-    // TODO: Fix this - causes conflict with new game link.
-    // Ask Vincent about this!
     newGame();
 
     // Function to reset the components of the game.
