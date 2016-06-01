@@ -20,6 +20,8 @@ $(document).ready(function(){
     var oldDifference;
 
     // Start the game when the document loads.
+    // TODO: Fix this - causes conflict with new game link.
+    // Ask Vincent about this!
     newGame();
 
     // Function to reset the components of the game.
@@ -57,13 +59,14 @@ $(document).ready(function(){
     function playGame() {
 
         // Function to activate the New Game link.
+        // TODO: Fix this
         $('a.new').on('click', newGame);
 
         // Get the user's guess.
         $('form').submit(function(e) {
             e.preventDefault();
 
-            // Get the guess and validate it.
+            // Get the guess.
             currentGuess = $('input#userGuess').val();
 
             // Debugging code
@@ -72,10 +75,11 @@ $(document).ready(function(){
             // Reset the input box.
             $('input#userGuess').val('');
 
-
-
             // Debugging code.
             console.log("Current guess is: " + currentGuess);
+
+            // Check to see if the guess meets the criteria.
+            // If so, add it to the count and the list of guesses.
             if (validateInput()) {
                 // Increment the counter for the number of guesses
                 count += 1;
@@ -86,8 +90,6 @@ $(document).ready(function(){
 
                 // Compare the current guess with the real number.
                 feedback = compareValues();
-
-               renderFeedback();
 
                 // Copy the current guess to a variable to track it for later.
                 previousGuess = currentGuess;
